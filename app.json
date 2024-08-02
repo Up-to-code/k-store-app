@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "k-store",
+    "slug": "k-store",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo.jpg",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo.jpg",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/logo.jpg"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
