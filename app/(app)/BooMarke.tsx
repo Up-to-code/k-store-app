@@ -1,17 +1,17 @@
 import Cart from "@/components/ui/Cart";
-import {  fetchProducts } from "@/lib/store/useSaveitem";
-import { useState } from "react";
+import {  getAllProducts } from "@/lib/store/useSaveitem";
+import { useEffect, useState } from "react";
 import { FlatList, Text, View, RefreshControl, Pressable } from "react-native";
 import { Product } from "./home";
-import { useFocusEffect } from "expo-router";
 
 const BooMarke = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [products_, setProducts] = useState<Product[]>([]);
-  useFocusEffect(() => {
+  useEffect(() => {
     const loadProducts = async () => {
-      const products = await fetchProducts();
+      const products = await getAllProducts();
       setProducts(products as any[]);
+      
       setRefreshing(false);
     };
 
@@ -19,7 +19,7 @@ const BooMarke = () => {
   });
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchProducts(); // Assuming fetchProducts is an async function
+    await getAllProducts(); // Assuming fetchProducts is an async function
     setRefreshing(false);
   };
 

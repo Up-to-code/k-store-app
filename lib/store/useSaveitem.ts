@@ -1,80 +1,69 @@
-import React, { useState, useEffect } from "react";
+// useSaveitem.ts
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, FlatList, Text, Button } from "react-native";
 import { Product } from "@/app/(app)/home";
 
-// Define the storage key
-const STORAGE_KEY = "products";
-
-// Function to fetch products from AsyncStorage
-export const fetchProducts = async (): Promise<Product[]> => {
+export const addProduct = async (
+  product: Product,
+  id: string
+): Promise<void> => {
   try {
-    const products = await AsyncStorage.getItem(STORAGE_KEY);
-    if (products === null) {
-      return [];
+    let savedProducts = await AsyncStorage.getItem("savedProducts");
+    let parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
+
+    // Check if the product is already saved
+    const isProductAlreadySaved = parsedProducts.some(
+      (item: Product) => item.id === id
+    );
+
+    if (!isProductAlreadySaved) {
+      parsedProducts.push({ ...product, id });
+      await AsyncStorage.setItem(
+        "savedProducts",
+        JSON.stringify(parsedProducts)
+      );
     }
-    return JSON.parse(products);
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
+    console.error("Error saving product:", error);
   }
 };
 
-// Function to add a product to AsyncStorage
-export const addProduct = async (product: Product): Promise<void> => {
+export const getOneProduct = async (id: string): Promise<Product | null> => {
   try {
-    const products = await fetchProducts();
-    // Check if the product already exists
-    const existingProductIndex = products.findIndex(p => p.id === product.id);
-
-    if (existingProductIndex !== -1) {
-      // If product exists, update it
-      products[existingProductIndex] = product;
-    } else {
-      // If product does not exist, add it
-      products.push(product);
-    }
-
-    console.log("Products before saving:", products);
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-    console.log("Product saved successfully.");
+    let savedProducts = await AsyncStorage.getItem("savedProducts");
+    let parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
+    return parsedProducts.find((product: Product) => product.id === id) || null;
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("Error getting saved product:", error);
+    return null;
   }
 };
 
-// Function to remove a product from AsyncStorage
 export const removeProduct = async (id: string): Promise<void> => {
   try {
-    const products = await fetchProducts();
-    const updatedProducts = products.filter(
-      (product) => product.id as any !== id
+    let savedProducts = await AsyncStorage.getItem("savedProducts");
+    let parsedProducts = savedProducts ? JSON.parse(savedProducts) : [];
+    parsedProducts = parsedProducts.filter(
+      (product: Product) => product.id !== id
     );
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProducts));
+    await AsyncStorage.setItem("savedProducts", JSON.stringify(parsedProducts));
   } catch (error) {
     console.error("Error removing product:", error);
   }
 };
 
-export const clearProducts = async (): Promise<void> => {
+export const getAllProducts = async (): Promise<Product[]> => {
   try {
-    await AsyncStorage.removeItem(STORAGE_KEY);
+    let savedProducts = await AsyncStorage.getItem("savedProducts");
+    return savedProducts ? JSON.parse(savedProducts) : [];
   } catch (error) {
-    console.error("Error clearing products:", error);
+    console.error("Error getting all saved products:", error);
+    return [];
   }
 };
-
-export const getOneProduct = async (id: string): Promise<Product | undefined> => {
+export const clearAllProducts = async (): Promise<void> => {
   try {
-    const products = await fetchProducts();
-    const product = products.find((product) => product.id as any === id);
-
-    if (!product) {
-      return undefined;
-    }
-    return product;
+    await AsyncStorage.removeItem("savedProducts");
   } catch (error) {
-    console.error("Error fetching product:", error);
-    throw error;
+    console.error("Error clearing all saved products:", error);
   }
 };

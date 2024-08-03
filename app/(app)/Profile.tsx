@@ -23,7 +23,7 @@ import { FIREBASE_AUTH } from "@/lib/firebase/FirebaseConfig";
 import { useFocusEffect, router } from "expo-router";
 import { ar } from "@/lib/lang/ar"; // Import translations
 import { useFonts } from "@/hooks/useFonts"; // Import the custom hook
-import { clearProducts } from "@/lib/store/useSaveitem";
+import { clearAllProducts } from "@/lib/store/useSaveitem";
 
 const Profile: React.FC = () => {
   const { colors } = useTheme();
@@ -183,7 +183,7 @@ const Profile: React.FC = () => {
             <Divider />
 
             <List.Item
-              onPress={() => clearProducts()}
+              onPress={() => clearAllProducts()}
               title={() => (
                 <Text style={styles.TextFont}>{texts.clear_cache}</Text>
               )}

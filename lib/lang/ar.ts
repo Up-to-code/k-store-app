@@ -49,4 +49,5 @@ export const ar = {
     no_notifications: "لا توجد اشعارات",
   },
   samTimeProfileTakesTime: "  من الممكن تعديل الملق الشخصي يأخذ الوقت",
+searchInPRoducts: "بحث في المنتجات"
 };

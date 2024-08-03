@@ -8,10 +8,9 @@ import {
   v,
 } from "@/lib/firebase/Serves";
 import Dillog from "@/components/Dillog";
-import { fetchProducts } from "@/lib/store/useSaveitem";
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   price: string;
   category: string;
@@ -33,7 +32,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     async function check() {
       const res = await check_v_of_app();
-      console.log(res);
       if (!res) {
         return;
       }

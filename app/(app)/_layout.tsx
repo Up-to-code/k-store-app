@@ -1,5 +1,5 @@
-import { Tabs } from "expo-router";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { Link, Tabs } from "expo-router";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import { ar } from "@/lib/lang/ar";
 import { Text } from "react-native";
 import { COLORS } from "@/hooks/colors";
@@ -7,6 +7,12 @@ const Layout = () => {
   return (
     <Tabs
       screenOptions={{
+        headerRight: () => {
+          return (
+            <Link href="/search"  className=" right-5"> 
+            <Ionicons className="mx-3" name="search" size={24} color="black" style={{ marginRight: 20 }} />
+         </Link> );
+        },
         tabBarLabel: () => null,
         tabBarStyle: {
           height: 55,

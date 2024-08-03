@@ -29,10 +29,12 @@ const ShowProduct: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isSaved, setIsSaved] = useState<any>();
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true);
         const response = await getProdctFomFirebaseUsingId(id as string);
         setProduct(response as Product);
       } catch (error) {
@@ -44,17 +46,25 @@ const ShowProduct: React.FC = () => {
 
     fetchProduct();
   }, [id]);
+
   useEffect(() => {
-    const fetchProduct = async () => {
-      const Pro = getOneProduct(id as string);
-      setIsSaved(Pro);
+    const fetchSavedProduct = async () => {
+      try {
+        const savedProduct = await getOneProduct(id as string);
+        setIsSaved(!!savedProduct);
+      } catch (error) {
+        console.error("Error fetching saved product:", error);
+        setIsSaved(false);
+      }
     };
-    fetchProduct();
-  }, [id, product]);
+
+    fetchSavedProduct();
+  }, [id]);
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
@@ -74,6 +84,15 @@ const ShowProduct: React.FC = () => {
       </View>
     );
   }
+
+  const handleSavePress = () => {
+    if (isSaved) {
+      removeProduct(id as string);
+    } else {
+      addProduct(product as Product, id as string);
+    }
+    setIsSaved(!isSaved);
+  };
 
   return (
     <SafeAreaView>
@@ -100,20 +119,11 @@ const ShowProduct: React.FC = () => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={styles.title}>{product.title}</Text>
-            <Pressable
-              onPress={() => {
-                setIsSaved(!isSaved);
-                if (isSaved) {
-                  removeProduct(id as string);
-                } else {
-                  addProduct(product);
-                }
-              }}
-            >
+            <Pressable onPress={handleSavePress} accessibilityLabel={isSaved ? "Unsave Product" : "Save Product"}>
               {isSaved ? (
                 <AntDesign name="heart" size={27} color={COLORS.primary} />
               ) : (
-                <AntDesign name="heart" size={27} color={COLORS.secondary} />
+                <AntDesign name="hearto" size={27} color={COLORS.secondary} />
               )}
             </Pressable>
           </View>
@@ -130,11 +140,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
   pagination: {
     bottom: 10,
   },
-
   errorContainer: {
     flex: 1,
     justifyContent: "center",
@@ -148,7 +158,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-
     paddingBottom: 20,
   },
   wrapper: {
